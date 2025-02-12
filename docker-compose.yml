@@ -10,5 +10,13 @@ services:
       - "./data:/opt/app/backend/data"
       - "./data/images:/opt/app/frontend/public/img"
 
+    depends_on:
+      clamav: null
+      condition: service_healthy
+    clamav:
+      restart: unless-stopped
+      image: clamav/clamav
+
+
   # To add ClamAV, to scan your shares for malicious files, 
   # see https://stonith404.github.io/pingvin-share/setup/integrations/#clamav-docker-only
