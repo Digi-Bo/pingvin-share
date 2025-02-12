@@ -9,14 +9,20 @@ services:
     volumes:
       - "./data:/opt/app/backend/data"
       - "./data/images:/opt/app/frontend/public/img"
-
     depends_on:
-      clamav: null
-      condition: service_healthy
-    clamav:
-      restart: unless-stopped
-      image: clamav/clamav
+      - clamav # Simplified format
+    # Optionally add a healthcheck for better control (not mandatory)
 
+  clamav:
+    image: clamav/clamav
+    restart: unless-stopped
+    ports:
+      - 3310:3310
+    healthcheck:
+      test: ["CMD", "clamdscan", "--version"] # Verify ClamAV is running
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # To add ClamAV, to scan your shares for malicious files, 
   # see https://stonith404.github.io/pingvin-share/setup/integrations/#clamav-docker-only
